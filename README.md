@@ -1,48 +1,58 @@
-# Gemini CLI for Termux (Android)
+# Gemini CLI on Termux (Experimental)
 
-[![License](https://img.shields.io/github/license/google-gemini/gemini-cli)](https://github.com/google-gemini/gemini-cli/blob/main/LICENSE)
-[![Fork of](https://img.shields.io/badge/fork%20of-google--gemini%2Fgemini--cli-blue)](https://github.com/google-gemini/gemini-cli)
+> [!WARNING]  
+> This is an **experimental fork** of the official
+> [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). While it
+> provides a path to run Gemini on Android via Termux, it is currently
+> **unstable** and intended for developers and enthusiasts.
 
-This is an **explicit fork** of the [Google Gemini CLI](https://github.com/google-gemini/gemini-cli), specifically adapted and optimized for **Android devices running Termux**.
+## Status
 
-## 📱 Why this fork?
+- **Installation**: ✅ Works
+- **CLI Startup**: ✅ Works
+- **Core Commands**: ⚠️ Partial Implementation
+- **Authentication**: ❌ Unstable
 
-The original Gemini CLI is designed for desktop environments. This fork introduces several changes to make it work seamlessly on Android:
+## Known Issues
 
-- **Termux Browser Support**: Replaced standard browser launching with `termux-open-url` for OAuth authentication.
-- **Android-Ready Installer**: A dedicated script to handle Termux-specific dependencies (Node.js LTS, Python, and build tools).
-- **Environment Optimization**: Pre-configured to handle the unique filesystem and permission structure of Termux.
+- **Authentication Failures**: OAuth and Web API support on Android are
+  inconsistent, often leading to auth errors.
+- **Dependency Issues**: `DOMException` and issues with deprecated Node.js
+  dependencies in the Termux environment.
+- **Stability**: Inconsistent behavior across different Node.js versions and
+  Android releases.
+- **UI Bugs**: Potential infinite scrolling issues when toggling the on-screen
+  keyboard.
 
-## 🛠️ Installation
+## Environment
 
-To install Gemini CLI on your Android device:
+- **Platform**: Termux (Android)
+- **Node.js**: v20.x / v22.x (Behavior varies)
+- **Android**: Version 10+ recommended
 
-1.  **Install Termux**: Get it from [F-Droid](https://f-droid.org/en/packages/com.termux/).
-2.  **Install Termux:API**: Install the [Termux:API app](https://f-droid.org/en/packages/com.termux.api/) and the package:
-    ```bash
-    pkg install termux-api
-    ```
-3.  **Run the Installer**:
-    ```bash
-    curl -sL https://raw.githubusercontent.com/Alex72-py/gemini-cli-termux/master/termux-install.sh | bash
-    ```
+## Installation (Termux)
 
-## 🚀 Getting Started
+To attempt an installation in your Termux environment, run:
 
-After installation, simply run:
 ```bash
-gemini login
+curl -sL https://raw.githubusercontent.com/Alex72-py/gemini-cli-termux/master/termux-install.sh | bash
 ```
-Follow the prompt to authenticate via your mobile browser.
 
-## 📜 Acknowledgments & Credits
+## Notes
 
-This project is a derivative work based on the [Gemini CLI](https://github.com/google-gemini/gemini-cli) developed by **Google**. 
+This repository documents a working but unstable setup to help others
+experiment, debug, or improve Gemini CLI support on Termux. It is not
+recommended for production use.
 
-- **Original Author**: [Google Gemini Team](https://github.com/google-gemini)
-- **License**: This fork maintains the original **Apache License 2.0**.
+## Credits & Acknowledgments
 
-We are grateful to the original authors for their incredible work in bringing Gemini to the terminal. This fork aims to extend that power to the mobile developer community.
+This project is a fork of the
+[Google Gemini CLI](https://github.com/google-gemini/gemini-cli). All core logic
+and branding belong to the original Google Gemini team. This fork specifically
+adds patches for Termux compatibility.
+
+For a full list of credits, see [CREDITS.md](./CREDITS.md).
 
 ---
-*Built for the Termux community by Alex72-py.*
+
+_Built for the Termux community by Alex72-py._
