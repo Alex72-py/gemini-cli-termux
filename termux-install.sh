@@ -5,7 +5,8 @@
 
 set -e
 
-echo "🚀 Starting Gemini CLI installation for Termux..."
+echo "🚀 Starting Gemini CLI (Termux/Android Fork) installation..."
+echo "Forked from google-gemini/gemini-cli and adapted for Android."
 
 # Update packages
 echo "📦 Updating packages..."
@@ -18,7 +19,10 @@ pkg install nodejs-lts python make clang binutils termux-api -y
 # Install the CLI
 echo "📥 Installing Gemini CLI..."
 # We use --unsafe-perm because some native modules might need it during compilation in Termux
-npm install -g @google/gemini-cli --unsafe-perm
+# Install from this fork's source to ensure Termux patches are applied
+echo "🔨 Building and installing from source..."
+npm install && npm run build
+npm install -g . --unsafe-perm
 
 echo ""
 echo "✅ Installation complete!"
