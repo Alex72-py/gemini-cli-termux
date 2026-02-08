@@ -56,7 +56,7 @@ export async function openBrowserSecurely(url: string): Promise<void> {
   validateUrl(url);
 
   const platformName = platform();
-  const isTermux = process.env.TERMUX_VERSION !== undefined;
+  const isTermux = process.env['TERMUX_VERSION'] !== undefined;
   let command: string;
   let args: string[];
 
@@ -65,34 +65,34 @@ export async function openBrowserSecurely(url: string): Promise<void> {
     args = [url];
   } else {
     switch (platformName) {
-    case 'darwin':
-      // macOS
-      command = 'open';
-      args = [url];
-      break;
+      case 'darwin':
+        // macOS
+        command = 'open';
+        args = [url];
+        break;
 
-    case 'win32':
-      // Windows - use PowerShell with Start-Process
-      // This avoids the cmd.exe shell which is vulnerable to injection
-      command = 'powershell.exe';
-      args = [
-        '-NoProfile',
-        '-NonInteractive',
-        '-WindowStyle',
-        'Hidden',
-        '-Command',
-        `Start-Process '${url.replace(/'/g, "''")}'`,
-      ];
-      break;
+      case 'win32':
+        // Windows - use PowerShell with Start-Process
+        // This avoids the cmd.exe shell which is vulnerable to injection
+        command = 'powershell.exe';
+        args = [
+          '-NoProfile',
+          '-NonInteractive',
+          '-WindowStyle',
+          'Hidden',
+          '-Command',
+          `Start-Process '${url.replace(/'/g, "''")}'`,
+        ];
+        break;
 
-    case 'linux':
-    case 'freebsd':
-    case 'openbsd':
-      // Linux and BSD variants
-      // Try xdg-open first, fall back to other options
-      command = 'xdg-open';
-      args = [url];
-      break;
+      case 'linux':
+      case 'freebsd':
+      case 'openbsd':
+        // Linux and BSD variants
+        // Try xdg-open first, fall back to other options
+        command = 'xdg-open';
+        args = [url];
+        break;
 
       default:
         throw new Error(`Unsupported platform: ${platformName}`);
@@ -178,7 +178,7 @@ export function shouldLaunchBrowser(): boolean {
   // On Linux, the presence of a display server is a strong indicator of a GUI.
   if (platform() === 'linux') {
     // In Termux, we can open URLs even without a display server.
-    const isTermux = process.env.TERMUX_VERSION !== undefined;
+    const isTermux = process.env['TERMUX_VERSION'] !== undefined;
     if (isTermux) {
       return true;
     }

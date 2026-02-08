@@ -13,16 +13,23 @@ echo "📦 Updating packages..."
 pkg update -y && pkg upgrade -y
 
 # Install dependencies
-echo "🛠️ Installing dependencies (Node.js, Python, Build Tools)..."
-pkg install nodejs-lts python make clang binutils termux-api -y
+echo "🛠️ Installing dependencies (Node.js, Python, Build Tools, Git)..."
+pkg install nodejs-lts python make clang binutils termux-api git -y
+
+# Clone the repository
+echo "📥 Cloning the repository..."
+cd $HOME
+rm -rf gemini-cli-termux
+git clone https://github.com/Alex72-py/gemini-cli-termux.git
+cd gemini-cli-termux
 
 # Install the CLI
 echo "📥 Installing Gemini CLI..."
-# We use --unsafe-perm because some native modules might need it during compilation in Termux
 # Install from this fork's source to ensure Termux patches are applied
 echo "🔨 Building and installing from source..."
-npm install && npm run build
-npm install -g . --unsafe-perm
+npm install
+npm run build
+npm install -g .
 
 echo ""
 echo "✅ Installation complete!"
