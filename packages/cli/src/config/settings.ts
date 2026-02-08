@@ -552,8 +552,9 @@ export function loadEnvironment(
             continue;
           }
 
-          // Load variable only if it's not already set in the environment.
-          if (!Object.hasOwn(process.env, key)) {
+          // Load variable. In Termux, we allow overriding to ensure .env settings are respected.
+          const isTermux = process.env['TERMUX_VERSION'] !== undefined;
+          if (!Object.hasOwn(process.env, key) || isTermux) {
             process.env[key] = value;
           }
         }

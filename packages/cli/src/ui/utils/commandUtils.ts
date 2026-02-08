@@ -257,6 +257,16 @@ export const copyToClipboard = async (text: string): Promise<void> => {
   }
 
   // Local / non-TTY fallback
+  const isTermux = process.env['TERMUX_VERSION'] !== undefined;
+  if (isTermux) {
+    try {
+      const { execSync } = await import('node:child_process');
+      execSync('termux-clipboard-set', { input: text });
+      return;
+    } catch (e) {
+      debugLogger.warn('Failed to use termux-clipboard-set:', e);
+    }
+  }
   await clipboardy.write(text);
 };
 

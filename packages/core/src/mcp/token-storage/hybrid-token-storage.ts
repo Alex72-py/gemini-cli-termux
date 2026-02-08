@@ -21,7 +21,9 @@ export class HybridTokenStorage extends BaseTokenStorage {
   }
 
   private async initializeStorage(): Promise<TokenStorage> {
-    const forceFileStorage = process.env[FORCE_FILE_STORAGE_ENV_VAR] === 'true';
+    const isTermux = process.env['TERMUX_VERSION'] !== undefined;
+    const forceFileStorage =
+      process.env[FORCE_FILE_STORAGE_ENV_VAR] === 'true' || isTermux;
 
     if (!forceFileStorage) {
       try {
