@@ -83,7 +83,7 @@ If you are using [Termux](https://termux.dev/) on Android, follow these steps:
 curl -sL https://raw.githubusercontent.com/Alex72-py/gemini-cli-termux/main/termux-install.sh | bash
 ```
 
-*Note: Replace `YOUR_USERNAME` with your actual GitHub username after forking.*
+
 
 ## Release Cadence and Tags
 
