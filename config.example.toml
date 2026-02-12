@@ -1,0 +1,54 @@
+# Example configuration for Gemini CLI
+# Copy this to ~/.config/gemini-cli/config.toml and customize
+
+[api]
+# Model to use (see available models with: gemini-termux config show)
+model = "gemini-2.0-flash-exp"
+
+# Request timeout in seconds
+timeout = 60
+
+[generation]
+# Temperature controls randomness (0.0-1.0)
+# Higher = more creative, Lower = more focused
+temperature = 0.9
+
+# Top-p nucleus sampling (0.0-1.0)
+top_p = 0.95
+
+# Top-k sampling (integer)
+top_k = 40
+
+# Maximum tokens in response
+max_output_tokens = 8192
+
+[ui]
+# Syntax highlighting theme
+# Options: monokai, github-dark, dracula, nord, etc.
+theme = "monokai"
+
+# Enable syntax highlighting
+syntax_highlighting = true
+
+# Show timestamps in chat
+show_timestamps = true
+
+# Stream responses (real-time) or wait for complete response
+streaming = true
+
+[history]
+# Enable conversation history
+enabled = true
+
+# Maximum number of messages to keep
+max_entries = 1000
+
+# Auto-save after each message
+auto_save = true
+
+[clipboard]
+# Use Termux-API for clipboard operations
+use_termux_api = true
+
+# Automatically copy code blocks to clipboard
+auto_copy_code = false
