@@ -68,8 +68,8 @@ git clone https://github.com/Alex72-py/gemini-cli-termux.git
 cd gemini-cli-termux
 
 # Run installer
-chmod +x install.sh
-./install.sh
+chmod +x termux-install.sh
+./termux-install.sh
 ```
 
 ### Manual Installation
