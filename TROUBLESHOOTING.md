@@ -34,6 +34,34 @@ python -c "import google.generativeai as genai; print('google-generativeai: OK')
 
 ---
 
+### 🔴 "Failed building wheel for Pillow" (VERY COMMON)
+
+**Error Message:**
+```
+ERROR: Failed building wheel for Pillow
+error: subprocess-exited-with-error
+× Building wheel for Pillow (pyproject.toml) did not run successfully.
+```
+
+**Problem:**
+- `Pillow` is an image processing library
+- Requires compilation of C extensions (libjpeg, libpng, etc.)
+- Compilation fails on Termux/Android
+
+**✅ SOLUTION:**
+
+```bash
+# DO NOT use pip for Pillow!
+# Use Termux's pre-compiled package:
+
+pkg install python-pillow
+
+# Verify it works:
+python -c "from PIL import Image; print('Pillow: OK')"
+```
+
+---
+
 ### 🔴 "ModuleNotFoundError: No module named 'google.generativeai'"
 
 **Solution:**
@@ -193,7 +221,7 @@ rm -rf ~/.local/lib/python3.*/site-packages/gemini_cli*
 
 # 3. Reinstall system dependencies
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio -y
+pkg install python git termux-api python-grpcio python-pillow -y
 
 # 4. Clone fresh copy
 cd ~
@@ -269,15 +297,15 @@ Should work normally. No special handling needed.
 
 ### Essential Commands
 ```bash
-# Install grpcio properly
-pkg install python-grpcio
+# Install native libraries properly
+pkg install python-grpcio python-pillow
 
 # Install google-generativeai
 pip install --break-system-packages --no-deps google-generativeai
 pip install --break-system-packages google-ai-generativelanguage protobuf
 
 # Test installation
-python -c "import grpc, google.generativeai as genai"
+python -c "import grpc, google.generativeai as genai; from PIL import Image"
 
 # Run diagnostics
 gemini-termux doctor
@@ -288,4 +316,4 @@ gemini-termux setup
 
 ---
 
-**Remember:** The key to successful installation is using `pkg install python-grpcio` instead of pip!
+**Remember:** The key to successful installation is using `pkg install` for grpcio AND Pillow instead of pip!

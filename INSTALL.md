@@ -20,8 +20,8 @@
 # Update Termux
 pkg update && pkg upgrade -y
 
-# Install dependencies (CRITICAL: includes python-grpcio)
-pkg install python git termux-api python-grpcio -y
+# Install dependencies (CRITICAL: includes python-grpcio and python-pillow)
+pkg install python git termux-api python-grpcio python-pillow -y
 
 # Clone repository
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -32,7 +32,9 @@ chmod +x install.sh
 ./install.sh
 ```
 
-**Important**: The installer handles `grpcio` specially. This package requires native compilation which fails with pip on Termux, so we install it via `pkg` instead.
+**Important**: The installer uses pre-compiled Termux packages for native libraries:
+- `python-grpcio` - Required by google-generativeai (won't compile via pip)
+- `python-pillow` - Image processing library (won't compile via pip)
 
 The installer will:
 - ✅ Check environment
@@ -96,15 +98,15 @@ chmod +x install.sh
 If the installer fails, install manually:
 
 ```bash
-# 1. Install system packages (CRITICAL: python-grpcio from pkg)
+# 1. Install system packages (CRITICAL: python-grpcio and python-pillow from pkg)
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio -y
+pkg install python git termux-api python-grpcio python-pillow -y
 
 # 2. Clone or download project
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
 cd gemini-cli-termux
 
-# 3. Install Python dependencies (except google-generativeai)
+# 3. Install Python dependencies (Pillow and google-generativeai excluded)
 pip install --break-system-packages -r requirements.txt
 
 # 4. Install google-generativeai (uses system grpcio)
@@ -123,8 +125,9 @@ gemini-termux setup
 
 **Why this process?**
 - `grpcio` (needed by google-generativeai) won't compile via pip on Termux
-- We install pre-compiled `python-grpcio` from Termux repos
-- Then install google-generativeai without trying to rebuild grpcio
+- `Pillow` (image processing) won't compile via pip on Termux
+- We install both as pre-compiled packages from Termux repos
+- Then install other packages normally via pip
 
 ---
 
@@ -215,7 +218,7 @@ pip install --break-system-packages rich prompt-toolkit httpx toml Pillow PyPDF2
 ```
 
 ### "Failed building wheel for grpcio"
-This is the most common error. **Solution:**
+This is a common error. **Solution:**
 
 ```bash
 # NEVER use pip for grpcio on Termux
@@ -224,6 +227,25 @@ pkg install python-grpcio
 
 # Verify it's installed
 python -c "import grpc; print(grpc.__version__)"
+```
+
+### "Failed building wheel for Pillow"
+Another common compilation error. **Solution:**
+
+```bash
+# NEVER use pip for Pillow on Termux
+# Use Termux package manager instead:
+pkg install python-pillow
+
+# Verify it's installed
+python -c "from PIL import Image; print('Pillow OK')"
+```
+
+### "ERROR: Could not build wheels for Pillow"
+Same as above. Pillow requires native C libraries that fail to compile on Termux.
+
+```bash
+pkg install python-pillow
 ```
 
 ### "pkg: command not found"

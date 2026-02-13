@@ -1,4 +1,6 @@
-# NOTE: google-generativeai requires grpcio which needs special installation on Termux
+# NOTE: Some packages require special installation on Termux:
+# - google-generativeai: requires grpcio (installed via pkg)
+# - Pillow: requires native compilation (installed via pkg)
 # See install.sh for proper installation steps
 
 # Core Dependencies (httpx is used by google-generativeai)
@@ -11,8 +13,7 @@ prompt-toolkit>=3.0.43
 # Configuration
 toml>=0.10.2
 
-# File Processing
-Pillow>=10.3.0
+# File Processing (Pillow installed via pkg)
 PyPDF2>=3.0.1
 
 # Utilities

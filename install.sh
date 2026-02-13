@@ -54,9 +54,11 @@ install_dependencies() {
         exit 1
     }
     
-    # Install required packages INCLUDING python-grpcio from Termux repos
-    # CRITICAL: python-grpcio must be installed via pkg, NOT pip
-    pkg install -y python git termux-api python-grpcio || {
+    # Install required packages INCLUDING pre-compiled native libraries
+    # CRITICAL: These must be installed via pkg, NOT pip:
+    # - python-grpcio: Required by google-generativeai
+    # - python-pillow: Image processing library
+    pkg install -y python git termux-api python-grpcio python-pillow || {
         print_error "Failed to install packages"
         exit 1
     }
