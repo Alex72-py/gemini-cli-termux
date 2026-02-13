@@ -56,9 +56,10 @@ install_dependencies() {
     
     # Install required packages INCLUDING pre-compiled native libraries
     # CRITICAL: These must be installed via pkg, NOT pip:
-    # - python-grpcio: Required by google-generativeai
+    # - python-grpcio: Required by google-generativeai (gRPC library)
     # - python-pillow: Image processing library
-    pkg install -y python git termux-api python-grpcio python-pillow || {
+    # - python-cryptography: Cryptographic library (Rust-based)
+    pkg install -y python git termux-api python-grpcio python-pillow python-cryptography || {
         print_error "Failed to install packages"
         exit 1
     }

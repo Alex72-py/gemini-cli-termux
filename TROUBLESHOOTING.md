@@ -62,6 +62,34 @@ python -c "from PIL import Image; print('Pillow: OK')"
 
 ---
 
+### 🔴 "Failed to build 'cryptography' when installing build dependencies" (COMMON)
+
+**Error Message:**
+```
+ERROR: Failed to build 'cryptography' when installing build dependencies for cryptography
+Rust not found, installing into a temporary directory
+Unsupported platform: 312
+```
+
+**Problem:**
+- `cryptography` is a Rust-based cryptographic library
+- Requires Rust compiler + native compilation
+- Compilation fails on Termux/Android
+
+**✅ SOLUTION:**
+
+```bash
+# DO NOT use pip for cryptography!
+# Use Termux's pre-compiled package:
+
+pkg install python-cryptography
+
+# Verify it works:
+python -c "import cryptography; print('cryptography: OK')"
+```
+
+---
+
 ### 🔴 "ModuleNotFoundError: No module named 'google.generativeai'"
 
 **Solution:**
@@ -221,7 +249,7 @@ rm -rf ~/.local/lib/python3.*/site-packages/gemini_cli*
 
 # 3. Reinstall system dependencies
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio python-pillow -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
 
 # 4. Clone fresh copy
 cd ~
@@ -297,15 +325,15 @@ Should work normally. No special handling needed.
 
 ### Essential Commands
 ```bash
-# Install native libraries properly
-pkg install python-grpcio python-pillow
+# Install ALL native libraries properly
+pkg install python-grpcio python-pillow python-cryptography
 
 # Install google-generativeai
 pip install --break-system-packages --no-deps google-generativeai
 pip install --break-system-packages google-ai-generativelanguage protobuf
 
 # Test installation
-python -c "import grpc, google.generativeai as genai; from PIL import Image"
+python -c "import grpc, cryptography; from PIL import Image; import google.generativeai"
 
 # Run diagnostics
 gemini-termux doctor
@@ -316,4 +344,4 @@ gemini-termux setup
 
 ---
 
-**Remember:** The key to successful installation is using `pkg install` for grpcio AND Pillow instead of pip!
+**Remember:** Install grpcio, Pillow, AND cryptography via `pkg`, never via pip!

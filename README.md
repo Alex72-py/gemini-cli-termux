@@ -61,7 +61,7 @@ The official [`@google/gemini-cli`](https://github.com/google-gemini/gemini-cli)
 ```bash
 # Install dependencies
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio python-pillow -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
 
 # Clone repository
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -72,7 +72,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-> **Note:** The installer uses Termux packages for `grpcio` and `Pillow` to avoid compilation errors
+> **Note:** Uses Termux pre-compiled packages for `grpcio`, `Pillow`, and `cryptography` to avoid compilation
 
 ### Manual Installation
 
@@ -81,7 +81,7 @@ chmod +x install.sh
 pip install --break-system-packages -r requirements.txt
 
 # Install packages requiring native compilation (use Termux packages)
-pkg install python-grpcio python-pillow
+pkg install python-grpcio python-pillow python-cryptography
 
 # Install google-generativeai (requires system grpcio)
 pip install --break-system-packages --no-deps google-generativeai

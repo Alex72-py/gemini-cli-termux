@@ -1,4 +1,4 @@
-# 🔧 NATIVE DEPENDENCIES FIX - Critical Installation Issues Resolved
+# 🔧 NATIVE DEPENDENCIES FIX - All Compilation Issues Resolved
 
 ## ❌ The Problems
 
@@ -7,45 +7,54 @@ When trying to install Python packages on Termux, you get compilation errors:
 ### Problem 1: grpcio
 ```
 ERROR: Failed building wheel for grpcio
-Command '/data/data/com.termux/files/usr/bin/aarch64-linux-android-clang' failed with exit code 1
+Command '/data/data/com.termux/files/usr/bin/aarch64-linux-android-clang' failed
 ```
 
 ### Problem 2: Pillow
 ```
 ERROR: Failed building wheel for Pillow
-error: subprocess-exited-with-error
 × Building wheel for Pillow (pyproject.toml) did not run successfully.
+```
+
+### Problem 3: cryptography
+```
+ERROR: Failed to build 'cryptography' when installing build dependencies
+Rust not found, installing into a temporary directory
+Unsupported platform: 312
 ```
 
 ## Why These Fail
 
-Both packages require **native C/C++ compilation**:
+All three packages require **native compilation**:
 
 ### grpcio:
 - C++ library for gRPC
 - Needs Android NDK
 - Platform detection fails
-- Header files missing
 
 ### Pillow:
 - Image processing library
 - Needs libjpeg, libpng, zlib
 - C extensions won't compile
-- Build system incompatible with Termux
+
+### cryptography:
+- Cryptographic library
+- Written in Rust
+- Requires Rust compiler + toolchain
+- Compilation fails on Android
 
 ## ✅ The Solution
 
 ### Use Termux's Pre-Compiled Packages
 
-Instead of pip, use Termux's package manager:
-
 ```bash
-# WRONG (fails):
+# WRONG (all fail):
 pip install google-generativeai  # tries to build grpcio
-pip install Pillow              # tries to compile C code
+pip install Pillow               # tries to compile C code
+pip install cryptography         # tries to compile Rust code
 
 # CORRECT:
-pkg install python-grpcio python-pillow
+pkg install python-grpcio python-pillow python-cryptography
 pip install --no-deps google-generativeai
 pip install google-ai-generativelanguage protobuf
 ```
@@ -55,7 +64,7 @@ pip install google-ai-generativelanguage protobuf
 ### Step 1: Install System Packages
 ```bash
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio python-pillow -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
 ```
 
 ### Step 2: Clone Repository
@@ -66,13 +75,13 @@ cd gemini-cli-termux
 
 ### Step 3: Install Python Dependencies
 ```bash
-# Install everything except google-generativeai and Pillow
+# Install pure Python packages (native libs excluded)
 pip install --break-system-packages -r requirements.txt
 ```
 
 ### Step 4: Install google-generativeai Properly
 ```bash
-# grpcio and Pillow are already installed via pkg
+# grpcio, Pillow, and cryptography already installed via pkg
 # Install google-generativeai WITHOUT trying to rebuild them
 pip install --break-system-packages --no-deps google-generativeai
 
@@ -87,9 +96,10 @@ pip install --break-system-packages -e .
 
 ### Step 6: Verify
 ```bash
-python -c "import grpc; print('grpcio:', grpc.__version__)"
-python -c "from PIL import Image; print('Pillow: OK')"
-python -c "import google.generativeai as genai; print('google-generativeai: OK')"
+python -c "import grpc; print('✓ grpcio:', grpc.__version__)"
+python -c "from PIL import Image; print('✓ Pillow: OK')"
+python -c "import cryptography; print('✓ cryptography: OK')"
+python -c "import google.generativeai as genai; print('✓ google-generativeai: OK')"
 gemini-termux --version
 ```
 
@@ -206,24 +216,13 @@ pip install --break-system-packages --no-deps google-generativeai
 ## 🎯 Summary
 
 **The key to success:**
-1. Install `python-grpcio` AND `python-pillow` via `pkg` (not pip)
+1. Install `python-grpcio`, `python-pillow`, AND `python-cryptography` via `pkg` (not pip)
 2. Install `google-generativeai` with `--no-deps` flag
 3. Manually install other dependencies
 
-**Both packages are handled automatically** by the `install.sh` script!
-
-## 📚 Related Issues
-
-- [termux/termux-packages#19307](https://github.com/termux/termux-packages/issues/19307) - grpcio
-- [termux/termux-packages#18444](https://github.com/termux/termux-packages/issues/18444) - grpcio
-- [grpc/grpc#25386](https://github.com/grpc/grpc/issues/25386) - grpcio Android
-- [python-pillow/Pillow#7248](https://github.com/python-pillow/Pillow/issues/7248) - Pillow Termux
-
-## 💡 Credits
-
-Thanks to the Termux maintainers for providing pre-compiled packages for both `python-grpcio` and `python-pillow`!
+**All three packages are handled automatically** by the `install.sh` script!
 
 ---
 
 **Updated**: February 13, 2026  
-**Status**: ✅ FIXED - Install script updated to handle both grpcio and Pillow properly
+**Status**: ✅ FIXED - All three native dependencies resolved (grpcio, Pillow, cryptography)

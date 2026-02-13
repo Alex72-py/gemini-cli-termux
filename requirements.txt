@@ -1,6 +1,7 @@
 # NOTE: Some packages require special installation on Termux:
 # - google-generativeai: requires grpcio (installed via pkg)
 # - Pillow: requires native compilation (installed via pkg)
+# - cryptography: Rust-based library (installed via pkg)
 # See install.sh for proper installation steps
 
 # Core Dependencies (httpx is used by google-generativeai)

@@ -20,8 +20,8 @@
 # Update Termux
 pkg update && pkg upgrade -y
 
-# Install dependencies (CRITICAL: includes python-grpcio and python-pillow)
-pkg install python git termux-api python-grpcio python-pillow -y
+# Install dependencies (CRITICAL: includes all native libraries)
+pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
 
 # Clone repository
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -33,8 +33,9 @@ chmod +x install.sh
 ```
 
 **Important**: The installer uses pre-compiled Termux packages for native libraries:
-- `python-grpcio` - Required by google-generativeai (won't compile via pip)
-- `python-pillow` - Image processing library (won't compile via pip)
+- `python-grpcio` - gRPC library (won't compile via pip)
+- `python-pillow` - Image processing (won't compile via pip)
+- `python-cryptography` - Cryptographic library (Rust-based, won't compile via pip)
 
 The installer will:
 - ✅ Check environment
@@ -98,15 +99,15 @@ chmod +x install.sh
 If the installer fails, install manually:
 
 ```bash
-# 1. Install system packages (CRITICAL: python-grpcio and python-pillow from pkg)
+# 1. Install system packages (CRITICAL: all native libraries from pkg)
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio python-pillow -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
 
 # 2. Clone or download project
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
 cd gemini-cli-termux
 
-# 3. Install Python dependencies (Pillow and google-generativeai excluded)
+# 3. Install Python dependencies (native libs excluded)
 pip install --break-system-packages -r requirements.txt
 
 # 4. Install google-generativeai (uses system grpcio)
@@ -124,9 +125,10 @@ gemini-termux setup
 ```
 
 **Why this process?**
-- `grpcio` (needed by google-generativeai) won't compile via pip on Termux
+- `grpcio` (gRPC library) won't compile via pip on Termux
 - `Pillow` (image processing) won't compile via pip on Termux
-- We install both as pre-compiled packages from Termux repos
+- `cryptography` (Rust-based) won't compile via pip on Termux
+- We install all three as pre-compiled packages from Termux repos
 - Then install other packages normally via pip
 
 ---
@@ -246,6 +248,25 @@ Same as above. Pillow requires native C libraries that fail to compile on Termux
 
 ```bash
 pkg install python-pillow
+```
+
+### "Failed to build 'cryptography' when installing build dependencies"
+Cryptography is a Rust-based package that won't compile on Termux. **Solution:**
+
+```bash
+# NEVER use pip for cryptography on Termux
+# Use Termux package manager instead:
+pkg install python-cryptography
+
+# Verify it's installed
+python -c "import cryptography; print('cryptography OK')"
+```
+
+### "Rust not found, installing into a temporary directory"
+This error appears when trying to build cryptography. It means Rust compiler is missing, but even if installed, cryptography won't compile properly on Termux.
+
+```bash
+pkg install python-cryptography
 ```
 
 ### "pkg: command not found"
