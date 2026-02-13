@@ -54,8 +54,9 @@ install_dependencies() {
         exit 1
     }
     
-    # Install required packages
-    pkg install -y python git termux-api || {
+    # Install required packages INCLUDING python-grpcio from Termux repos
+    # CRITICAL: python-grpcio must be installed via pkg, NOT pip
+    pkg install -y python git termux-api python-grpcio || {
         print_error "Failed to install packages"
         exit 1
     }
@@ -71,9 +72,22 @@ install_python_packages() {
         print_warning "Failed to upgrade pip (continuing anyway)"
     }
     
-    # Install requirements
+    # Install requirements (WITHOUT google-generativeai, it needs special handling)
     pip install --break-system-packages -r requirements.txt || {
         print_error "Failed to install Python packages"
+        exit 1
+    }
+    
+    # NOW install google-generativeai (will use the system grpcio)
+    print_step "Installing google-generativeai (using system grpcio)..."
+    pip install --break-system-packages --no-deps google-generativeai || {
+        print_error "Failed to install google-generativeai"
+        exit 1
+    }
+    
+    # Install missing dependencies of google-generativeai (except grpcio)
+    pip install --break-system-packages google-ai-generativelanguage protobuf || {
+        print_error "Failed to install google-generativeai dependencies"
         exit 1
     }
     

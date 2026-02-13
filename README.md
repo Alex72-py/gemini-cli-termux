@@ -61,7 +61,7 @@ The official [`@google/gemini-cli`](https://github.com/google-gemini/gemini-cli)
 ```bash
 # Install dependencies
 pkg update && pkg upgrade -y
-pkg install python git termux-api -y
+pkg install python git termux-api python-grpcio -y
 
 # Clone repository
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -72,11 +72,18 @@ chmod +x install.sh
 ./install.sh
 ```
 
+> **Note:** The installer handles `grpcio` specially (uses Termux package instead of pip)
+
 ### Manual Installation
 
 ```bash
 # Install Python packages
 pip install --break-system-packages -r requirements.txt
+
+# Install google-generativeai (requires system grpcio)
+pkg install python-grpcio
+pip install --break-system-packages --no-deps google-generativeai
+pip install --break-system-packages google-ai-generativelanguage protobuf
 
 # Install CLI
 pip install --break-system-packages -e .

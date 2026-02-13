@@ -20,8 +20,8 @@
 # Update Termux
 pkg update && pkg upgrade -y
 
-# Install dependencies
-pkg install python git termux-api -y
+# Install dependencies (CRITICAL: includes python-grpcio)
+pkg install python git termux-api python-grpcio -y
 
 # Clone repository
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -32,9 +32,12 @@ chmod +x install.sh
 ./install.sh
 ```
 
+**Important**: The installer handles `grpcio` specially. This package requires native compilation which fails with pip on Termux, so we install it via `pkg` instead.
+
 The installer will:
 - ✅ Check environment
 - ✅ Install Python packages
+- ✅ Install google-generativeai with system grpcio
 - ✅ Set up CLI commands
 - ✅ Run diagnostics
 - ✅ Launch setup wizard
@@ -93,26 +96,35 @@ chmod +x install.sh
 If the installer fails, install manually:
 
 ```bash
-# 1. Install system packages
+# 1. Install system packages (CRITICAL: python-grpcio from pkg)
 pkg update && pkg upgrade -y
-pkg install python git termux-api -y
+pkg install python git termux-api python-grpcio -y
 
 # 2. Clone or download project
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
 cd gemini-cli-termux
 
-# 3. Install Python dependencies
+# 3. Install Python dependencies (except google-generativeai)
 pip install --break-system-packages -r requirements.txt
 
-# 4. Install CLI
+# 4. Install google-generativeai (uses system grpcio)
+pip install --break-system-packages --no-deps google-generativeai
+pip install --break-system-packages google-ai-generativelanguage protobuf
+
+# 5. Install CLI
 pip install --break-system-packages -e .
 
-# 5. Verify installation
+# 6. Verify installation
 gemini-termux --version
 
-# 6. Run setup
+# 7. Run setup
 gemini-termux setup
 ```
+
+**Why this process?**
+- `grpcio` (needed by google-generativeai) won't compile via pip on Termux
+- We install pre-compiled `python-grpcio` from Termux repos
+- Then install google-generativeai without trying to rebuild grpcio
 
 ---
 
@@ -190,11 +202,28 @@ source ~/.bashrc
 # Upgrade pip first
 pip install --upgrade pip --break-system-packages
 
-# Try installing dependencies individually
-pip install --break-system-packages google-generativeai
-pip install --break-system-packages rich
-pip install --break-system-packages prompt-toolkit
-# ... etc
+# If grpcio fails:
+# DO NOT use pip for grpcio on Termux!
+pkg install python-grpcio
+
+# Then install google-generativeai
+pip install --break-system-packages --no-deps google-generativeai
+pip install --break-system-packages google-ai-generativelanguage protobuf
+
+# Install other dependencies
+pip install --break-system-packages rich prompt-toolkit httpx toml Pillow PyPDF2
+```
+
+### "Failed building wheel for grpcio"
+This is the most common error. **Solution:**
+
+```bash
+# NEVER use pip for grpcio on Termux
+# Use Termux package manager instead:
+pkg install python-grpcio
+
+# Verify it's installed
+python -c "import grpc; print(grpc.__version__)"
 ```
 
 ### "pkg: command not found"
