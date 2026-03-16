@@ -38,6 +38,20 @@ class TestAuth:
         assert auth.delete_api_key()
         assert not auth.is_authenticated()
 
+    def test_validate_api_key_accepts_google_key_format(self, tmp_path):
+        """Google API keys with expected format should validate."""
+        auth = Auth(config_dir=tmp_path)
+        valid_key = "AIza" + "AbCdEf0123456789-_AbCdEf0123456789X"
+
+        assert auth.validate_api_key(valid_key)
+
+    def test_validate_api_key_rejects_masked_placeholder(self, tmp_path):
+        """Masked/example keys should not validate."""
+        auth = Auth(config_dir=tmp_path)
+        masked_key = "AIza" + "x" * 35
+
+        assert not auth.validate_api_key(masked_key)
+
 
 class TestConfig:
     """Test configuration management."""

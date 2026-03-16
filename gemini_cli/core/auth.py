@@ -4,6 +4,7 @@ Handles secure storage and retrieval of API keys.
 """
 
 import os
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -113,10 +114,14 @@ class Auth:
         
         api_key = api_key.strip()
         
-        # Basic checks: should be alphanumeric, reasonable length
-        if len(api_key) < 20:
+        # Google API keys used by Gemini are expected to match this format.
+        if not self.GOOGLE_API_KEY_PATTERN.fullmatch(api_key):
             return False
-        
-        # Should start with common Google API key prefix patterns
-        # This is just a basic check, not comprehensive
+
+        # Reject obvious masked/example placeholders (e.g. AIzaSyxxxxxxxx...)
+        key_body = api_key[6:]
+        if len(set(key_body.lower())) <= 2:
+            return False
+
         return True
+    GOOGLE_API_KEY_PATTERN = re.compile(r"^AIza[0-9A-Za-z_-]{35}$")
