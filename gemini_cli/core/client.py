@@ -3,10 +3,14 @@ Gemini API client for chat and generation.
 Handles all interactions with Google's Generative AI API.
 """
 
-import google.generativeai as genai
-from typing import List, Dict, Any, Optional, Generator
+from importlib import import_module
+from importlib.util import find_spec
 from pathlib import Path
-import mimetypes
+from typing import Generator, List, Dict, Optional
+
+
+GENAI_AVAILABLE = find_spec("google") is not None and find_spec("google.generativeai") is not None
+genai = import_module("google.generativeai") if GENAI_AVAILABLE else None
 
 
 class GeminiClient:
@@ -38,6 +42,11 @@ class GeminiClient:
         self.api_key = api_key
         self.model_name = model
         self.generation_config = generation_config
+
+        if not GENAI_AVAILABLE:
+            raise RuntimeError(
+                "Missing dependency: google-generativeai. Install it with `pip install google-generativeai`."
+            )
         
         # Configure API
         genai.configure(api_key=self.api_key)
