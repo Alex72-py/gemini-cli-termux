@@ -7,12 +7,20 @@ License: MIT
 Repository: https://github.com/Alex72-py/gemini-cli-termux
 """
 
+from importlib import import_module
+
 __version__ = "1.0.0"
 __author__ = "Alex72-py"
 __license__ = "MIT"
 
-from gemini_cli.core.client import GeminiClient
 from gemini_cli.core.config import Config
 from gemini_cli.core.auth import Auth
 
 __all__ = ["GeminiClient", "Config", "Auth", "__version__"]
+
+
+def __getattr__(name: str):
+    """Lazily import optional heavy modules on demand."""
+    if name == "GeminiClient":
+        return import_module("gemini_cli.core.client").GeminiClient
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

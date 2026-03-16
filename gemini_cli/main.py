@@ -6,10 +6,9 @@ Handles command-line interface and argument parsing.
 import sys
 import argparse
 from pathlib import Path
-from typing import List, Optional
 
 from gemini_cli import __version__
-from gemini_cli.core import Auth, Config, GeminiClient
+from gemini_cli.core import Auth, Config
 from gemini_cli.ui import Display, ChatInterface
 from gemini_cli.utils import Clipboard, FileHandler, ConversationMemory
 
@@ -70,6 +69,8 @@ def setup_command(args, config: Config, auth: Auth, display: Display) -> int:
             return 1
     
     # Configure model
+    from gemini_cli.core import GeminiClient
+
     display.print("\n[bold]Step 2: Default Model[/bold]")
     display.print("Available models:")
     for i, model in enumerate(GeminiClient.MODELS, 1):
@@ -113,7 +114,7 @@ def setup_command(args, config: Config, auth: Auth, display: Display) -> int:
     return 0
 
 
-def chat_command(args, client: GeminiClient, config: Config, display: Display) -> int:
+def chat_command(args, client, config: Config, display: Display) -> int:
     """
     Start interactive chat session.
     
@@ -171,7 +172,7 @@ def chat_command(args, client: GeminiClient, config: Config, display: Display) -
         return 1
 
 
-def ask_command(args, client: GeminiClient, config: Config, display: Display) -> int:
+def ask_command(args, client, config: Config, display: Display) -> int:
     """
     Ask a single question.
     
@@ -410,6 +411,8 @@ Examples:
         
         # Initialize client
         try:
+            from gemini_cli.core import GeminiClient
+
             client = GeminiClient(
                 api_key=api_key,
                 model=config.api.model,
