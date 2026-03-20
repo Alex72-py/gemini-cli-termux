@@ -99,7 +99,7 @@ install_python_packages() {
     print_success "Python packages installed"
 }
 
-verify_imports() {
+verify_imports():
     print_step "Verifying core imports..."
     
     # Test critical imports
