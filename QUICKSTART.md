@@ -7,7 +7,7 @@ Get up and running with Gemini CLI in under 5 minutes!
 ```bash
 # In Termux
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography python-pydantic -y
 
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
 cd gemini-cli-termux
@@ -15,7 +15,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-> ⚠️ **Important:** Install ALL three native libraries via pkg to prevent compilation errors!
+> ⚠️ **Note**: `python-grpcio`, `python-pillow`, `python-cryptography`, and `python-pydantic` MUST be installed via `pkg` to avoid compilation errors.
 
 ## Step 2: Get API Key (1 minute)
 
