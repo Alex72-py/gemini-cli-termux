@@ -99,14 +99,11 @@ install_python_packages() {
     print_success "Python packages installed"
 }
 
-verify_imports():
+verify_imports() {
     print_step "Verifying core imports..."
     
-    # Test critical imports
-    python3 << 'EOF' || {
-        print_error "Import verification failed"
-        exit 1
-    }
+    # Run Python verification and capture exit code
+    if ! python3 << 'EOF'
 import sys
 errors = []
 
@@ -158,6 +155,10 @@ if errors:
         print(error)
     sys.exit(1)
 EOF
+    then
+        print_error "Import verification failed"
+        exit 1
+    fi
     
     print_success "All imports verified"
 }
@@ -251,7 +252,7 @@ main() {
     # Install
     install_dependencies
     install_python_packages
-    verify_imports  # NEW: Verify imports work
+    verify_imports  # Verify imports work
     install_cli
     setup_permissions
     
