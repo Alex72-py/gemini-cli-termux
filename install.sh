@@ -70,12 +70,9 @@ install_dependencies() {
 install_python_packages() {
     print_step "Installing Python packages..."
     
-    # Upgrade pip
-    pip install --upgrade pip --break-system-packages || {
-        print_warning "Failed to upgrade pip (continuing anyway)"
-    }
+    # NOTE: DO NOT upgrade pip in Termux - it breaks the python-pip package
     
-    # FIRST: Install requirements.txt (pure Python packages + httpx)
+    # FIRST: Install requirements.txt (pure Python packages)
     print_step "Installing base Python dependencies..."
     pip install --break-system-packages -r requirements.txt || {
         print_error "Failed to install Python packages"
@@ -83,8 +80,9 @@ install_python_packages() {
     }
     
     # SECOND: Install google-generativeai dependencies (BEFORE google-generativeai)
+    # CRITICAL: Include pydantic (required by google-generativeai)
     print_step "Installing google-generativeai dependencies..."
-    pip install --break-system-packages google-ai-generativelanguage protobuf || {
+    pip install --break-system-packages pydantic google-ai-generativelanguage protobuf || {
         print_error "Failed to install google-generativeai dependencies"
         exit 1
     }
@@ -130,6 +128,12 @@ try:
     print("✓ httpx:", httpx.__version__)
 except ImportError as e:
     errors.append(f"✗ httpx: {e}")
+
+try:
+    import pydantic
+    print("✓ pydantic:", pydantic.__version__)
+except ImportError as e:
+    errors.append(f"✗ pydantic: {e}")
 
 try:
     import google.ai.generativelanguage
