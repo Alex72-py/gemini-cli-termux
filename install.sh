@@ -75,26 +75,91 @@ install_python_packages() {
         print_warning "Failed to upgrade pip (continuing anyway)"
     }
     
-    # Install requirements (WITHOUT google-generativeai, it needs special handling)
+    # FIRST: Install requirements.txt (pure Python packages + httpx)
+    print_step "Installing base Python dependencies..."
     pip install --break-system-packages -r requirements.txt || {
         print_error "Failed to install Python packages"
         exit 1
     }
     
-    # NOW install google-generativeai (will use the system grpcio)
-    print_step "Installing google-generativeai (using system grpcio)..."
-    pip install --break-system-packages --no-deps google-generativeai || {
-        print_error "Failed to install google-generativeai"
-        exit 1
-    }
-    
-    # Install missing dependencies of google-generativeai (except grpcio)
+    # SECOND: Install google-generativeai dependencies (BEFORE google-generativeai)
+    print_step "Installing google-generativeai dependencies..."
     pip install --break-system-packages google-ai-generativelanguage protobuf || {
         print_error "Failed to install google-generativeai dependencies"
         exit 1
     }
     
+    # THIRD: Install google-generativeai with --no-deps (uses system grpcio + installed deps)
+    print_step "Installing google-generativeai (using system grpcio and installed deps)..."
+    pip install --break-system-packages --no-deps google-generativeai || {
+        print_error "Failed to install google-generativeai"
+        exit 1
+    }
+    
     print_success "Python packages installed"
+}
+
+verify_imports() {
+    print_step "Verifying core imports..."
+    
+    # Test critical imports
+    python3 << 'EOF' || {
+        print_error "Import verification failed"
+        exit 1
+    }
+import sys
+errors = []
+
+try:
+    import grpc
+    print("✓ grpcio:", grpc.__version__)
+except ImportError as e:
+    errors.append(f"✗ grpcio: {e}")
+
+try:
+    from PIL import Image
+    print("✓ Pillow: OK")
+except ImportError as e:
+    errors.append(f"✗ Pillow: {e}")
+
+try:
+    import cryptography
+    print("✓ cryptography: OK")
+except ImportError as e:
+    errors.append(f"✗ cryptography: {e}")
+
+try:
+    import httpx
+    print("✓ httpx:", httpx.__version__)
+except ImportError as e:
+    errors.append(f"✗ httpx: {e}")
+
+try:
+    import google.ai.generativelanguage
+    print("✓ google-ai-generativelanguage: OK")
+except ImportError as e:
+    errors.append(f"✗ google-ai-generativelanguage: {e}")
+
+try:
+    import google.protobuf
+    print("✓ protobuf: OK")
+except ImportError as e:
+    errors.append(f"✗ protobuf: {e}")
+
+try:
+    import google.generativeai as genai
+    print("✓ google-generativeai: OK")
+except ImportError as e:
+    errors.append(f"✗ google-generativeai: {e}")
+
+if errors:
+    print("\nERRORS:")
+    for error in errors:
+        print(error)
+    sys.exit(1)
+EOF
+    
+    print_success "All imports verified"
 }
 
 install_cli() {
@@ -186,6 +251,7 @@ main() {
     # Install
     install_dependencies
     install_python_packages
+    verify_imports  # NEW: Verify imports work
     install_cli
     setup_permissions
     
