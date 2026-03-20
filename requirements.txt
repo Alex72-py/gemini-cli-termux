@@ -4,10 +4,8 @@
 # - cryptography: Rust-based library (installed via pkg)
 # See install.sh for proper installation steps
 
-# Core Dependencies (httpx is used by google-generativeai)
-httpx==0.27.0
-google-ai-generativelanguage>=0.4.0
-protobuf>=4.21.0                      
+# Core Dependencies
+httpx>=0.27.0
 
 # Terminal UI
 rich>=13.7.0
@@ -16,9 +14,13 @@ prompt-toolkit>=3.0.43
 # Configuration
 toml>=0.10.2
 
-# File Processing (Pillow installed via pkg)
+# File Processing
 PyPDF2>=3.0.1
 
 # Utilities
 python-dateutil>=2.9.0
 aiofiles>=23.2.1
+
+# NOTE: google-generativeai, google-ai-generativelanguage, and protobuf 
+# are installed separately by install.sh to ensure proper dependency order
+# with system grpcio
