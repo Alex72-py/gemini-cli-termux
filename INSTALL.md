@@ -1,5 +1,28 @@
 # Installation Guide
 
+## ⚠️ **IMPORTANT: Native Dependencies**
+
+This project requires **4 packages that MUST be installed via Termux\'s package manager (`pkg`)**, NOT via pip:
+
+| Package | Why via pkg? | What happens if you use pip? |
+|---------|--------------|------------------------------|
+| `python-grpcio` | C++ library | ❌ Compilation fails: "Failed building wheel for grpcio" |
+| `python-pillow` | C library | ❌ Compilation fails: "Failed building wheel for Pillow" |
+| `python-cryptography` | Rust library | ❌ Compilation fails: "Rust not found" |
+| `python-pydantic` | Rust library | ❌ Compilation fails: "Failed building pydantic-core" |
+
+**Why this matters**: These packages contain native code (C++, C, Rust) that requires compilation. Android/Termux lacks the proper build environment (Android NDK, Rust compiler, etc.), so compilation **always fails**. Termux maintainers provide pre-compiled versions specifically for Android.
+
+### Installation Commands
+
+```bash
+# CORRECT (pre-compiled):
+pkg install python-grpcio python-pillow python-cryptography python-pydantic
+
+# WRONG (will fail):
+pip install grpcio pillow cryptography pydantic
+```
+
 ## Prerequisites
 
 ### Required
@@ -21,7 +44,7 @@
 pkg update && pkg upgrade -y
 
 # Install dependencies (CRITICAL: includes all native libraries)
-pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography python-pydantic -y
 
 # Clone repository
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -33,9 +56,10 @@ chmod +x install.sh
 ```
 
 **Important**: The installer uses pre-compiled Termux packages for native libraries:
-- `python-grpcio` - gRPC library (won't compile via pip)
-- `python-pillow` - Image processing (won't compile via pip)
-- `python-cryptography` - Cryptographic library (Rust-based, won't compile via pip)
+- `python-grpcio` - gRPC library (won\'t compile via pip)
+- `python-pillow` - Image processing (won\'t compile via pip)
+- `python-cryptography` - Cryptographic library (Rust-based, won\'t compile via pip)
+- `python-pydantic` - Validation library (Rust-based, won\'t compile via pip)
 
 The installer will:
 - ✅ Check environment
@@ -101,7 +125,7 @@ If the installer fails, install manually:
 ```bash
 # 1. Install system packages (CRITICAL: all native libraries from pkg)
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography python-pydantic -y
 
 # 2. Clone or download project
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -124,11 +148,10 @@ gemini-termux --version
 gemini-termux setup
 ```
 
-**Why this process?**
-- `grpcio` (gRPC library) won't compile via pip on Termux
-- `Pillow` (image processing) won't compile via pip on Termux
-- `cryptography` (Rust-based) won't compile via pip on Termux
-- We install all three as pre-compiled packages from Termux repos
+**Why this process?*- `grpcio` (gRPC library) won\'t compile via pip on Termux
+- `Pillow` (image processing) won\'t compile via pip on Termux
+- `cryptography` (Rust-based) won\'t compile via pip on Termux
+- `pydantic` (Rust-based) won\'t compile via pip on Termux- We install all three as pre-compiled packages from Termux repos
 - Then install other packages normally via pip
 
 ---

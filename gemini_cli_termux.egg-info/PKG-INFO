@@ -1,8 +1,53 @@
-> 🚨 **CRITICAL**: This project requires 4 pre-compiled packages from Termux. **DO NOT** install them via pip:
-> ```bash
-> pkg install python-grpcio python-pillow python-cryptography python-pydantic
-> ```
-> Attempting to install these via `pip` will result in compilation failures.
+Metadata-Version: 2.4
+Name: gemini-cli-termux
+Version: 1.0.0
+Summary: Native Gemini AI CLI for Termux on Android
+Home-page: https://github.com/Alex72-py/gemini-cli-termux
+Author: Alex72-py
+Author-email: 
+Project-URL: Bug Reports, https://github.com/Alex72-py/gemini-cli-termux/issues
+Project-URL: Source, https://github.com/Alex72-py/gemini-cli-termux
+Project-URL: Documentation, https://github.com/Alex72-py/gemini-cli-termux#readme
+Keywords: gemini ai cli termux android google generative-ai chatbot
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Communications :: Chat
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Classifier: Operating System :: Android
+Classifier: Environment :: Console
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: httpx==0.27.0
+Requires-Dist: rich>=13.7.0
+Requires-Dist: prompt-toolkit>=3.0.43
+Requires-Dist: toml>=0.10.2
+Requires-Dist: PyPDF2>=3.0.1
+Requires-Dist: python-dateutil>=2.9.0
+Requires-Dist: aiofiles>=23.2.1
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+Requires-Dist: flake8>=6.0.0; extra == "dev"
+Requires-Dist: mypy>=1.4.0; extra == "dev"
+Dynamic: author
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: keywords
+Dynamic: license-file
+Dynamic: project-url
+Dynamic: provides-extra
+Dynamic: requires-dist
+Dynamic: requires-python
+Dynamic: summary
 
 # 🤖 Gemini CLI for Termux
 
@@ -65,9 +110,9 @@ The official [`@google/gemini-cli`](https://github.com/google-gemini/gemini-cli)
 ### Quick Install (Recommended)
 
 ```bash
-# Install dependencies (INCLUDING 4 pre-compiled native libraries)
+# Install dependencies
 pkg update && pkg upgrade -y
-pkg install python git termux-api python-grpcio python-pillow python-cryptography python-pydantic -y
+pkg install python git termux-api python-grpcio python-pillow python-cryptography -y
 
 # Clone repository
 git clone https://github.com/Alex72-py/gemini-cli-termux.git
@@ -78,13 +123,7 @@ chmod +x install.sh
 ./install.sh
 ```
 
-> **⚠️ CRITICAL**: The following packages **MUST** be installed via `pkg`, **NEVER** via `pip`:
-> - `python-grpcio` - gRPC library (C++)
-> - `python-pillow` - Image processing (C)
-> - `python-cryptography` - Cryptography (Rust)
-> - `python-pydantic` - Validation (Rust)
->
-> These packages require native compilation (C++, C, Rust) which **fails on Termux**. Using pre-compiled Termux packages avoids all compilation errors.
+> **Note:** Uses Termux pre-compiled packages for `grpcio`, `Pillow`, and `cryptography` to avoid compilation
 
 ### Manual Installation
 

@@ -7,11 +7,11 @@
 set -e  # Exit on error
 
 # Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+RED=\'\\033[0;31m\'
+GREEN=\'\\033[0;32m\'
+YELLOW=\'\\033[1;33m\'
+BLUE=\'\\033[0;34m\'
+NC=\'\\033[0m\' # No Color
 
 # Functions
 print_header() {
@@ -59,7 +59,8 @@ install_dependencies() {
     # - python-grpcio: Required by google-generativeai (gRPC library)
     # - python-pillow: Image processing library
     # - python-cryptography: Cryptographic library (Rust-based)
-    pkg install -y python git termux-api python-grpcio python-pillow python-cryptography || {
+    # - python-pydantic: Validation library (Rust-based pydantic-core)
+    pkg install -y python git termux-api python-grpcio python-pillow python-cryptography python-pydantic || {
         print_error "Failed to install packages"
         exit 1
     }
@@ -80,15 +81,15 @@ install_python_packages() {
     }
     
     # SECOND: Install google-generativeai dependencies (BEFORE google-generativeai)
-    # CRITICAL: Include pydantic (required by google-generativeai)
+    # Note: pydantic is already installed via pkg, so we only install these
     print_step "Installing google-generativeai dependencies..."
-    pip install --break-system-packages pydantic google-ai-generativelanguage protobuf || {
+    pip install --break-system-packages google-ai-generativelanguage protobuf || {
         print_error "Failed to install google-generativeai dependencies"
         exit 1
     }
     
-    # THIRD: Install google-generativeai with --no-deps (uses system grpcio + installed deps)
-    print_step "Installing google-generativeai (using system grpcio and installed deps)..."
+    # THIRD: Install google-generativeai with --no-deps (uses system packages)
+    print_step "Installing google-generativeai (using system grpcio and pydantic)..."
     pip install --break-system-packages --no-deps google-generativeai || {
         print_error "Failed to install google-generativeai"
         exit 1
@@ -101,7 +102,7 @@ verify_imports() {
     print_step "Verifying core imports..."
     
     # Run Python verification and capture exit code
-    if ! python3 << 'EOF'
+    if ! python3 << \'EOF\'
 import sys
 errors = []
 
@@ -202,7 +203,7 @@ run_setup_wizard() {
     if [[ ! $REPLY =~ ^[Nn]$ ]]; then
         gemini-termux setup
     else
-        print_warning "Setup skipped. Run 'gemini-termux setup' later."
+        print_warning "Setup skipped. Run \'gemini-termux setup\' later."
     fi
 }
 
@@ -214,7 +215,7 @@ verify_installation() {
         print_success "CLI command available"
         
         # Check version
-        VERSION=$(gemini-termux --version 2>&1 | grep -oP '\d+\.\d+\.\d+' || echo "unknown")
+        VERSION=$(gemini-termux --version 2>&1 | grep -oP \'\\d+\\.\\d+\\.\\d+\' || echo "unknown")
         print_success "Version: $VERSION"
     else
         print_error "CLI command not found"

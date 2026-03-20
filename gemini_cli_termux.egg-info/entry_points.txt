@@ -1,0 +1,3 @@
+[console_scripts]
+gemini-termux = gemini_cli.main:main
+gt = gemini_cli.main:main

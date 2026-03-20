@@ -1,5 +1,34 @@
 # Troubleshooting Guide
 
+## 🔴 **Most Common Errors (SOLVED)**
+
+### Error: "Failed building wheel for [grpcio/Pillow/cryptography/pydantic]"
+
+**Cause**: Trying to install native libraries via `pip` instead of `pkg`.
+
+**Solution**: Install these **4 packages via pkg ONLY**:
+
+```bash
+pkg install python-grpcio python-pillow python-cryptography python-pydantic
+```
+
+**Why?** These packages contain native code (C++, C, Rust) that **cannot compile** on Termux/Android. The `pkg` versions are pre-compiled for Android.
+
+| Package | Contains | Compilation Error |
+|---------|----------|-------------------|
+| `python-grpcio` | C++ (gRPC) | `node-gyp`, `clang` failures |
+| `python-pillow` | C (libjpeg, libpng) | Missing headers, build failures |
+| `python-cryptography` | Rust | "Rust not found", "Unsupported platform" |
+| `python-pydantic` | Rust (pydantic-core) | "Failed building pydantic-core" |
+
+**After installing via pkg**, continue with:
+```bash
+pip install --break-system-packages google-ai-generativelanguage protobuf
+pip install --break-system-packages --no-deps google-generativeai
+```
+
+---
+
 ## Common Installation Issues
 
 ### 🔴 "Failed building wheel for grpcio" (MOST COMMON)
